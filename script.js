@@ -1,6 +1,7 @@
 const $ = (s, p = document) => p.querySelector(s);
 const $$ = (s, p = document) => [...p.querySelectorAll(s)];
 
+
 /* =========================================================
    PRELOADER
 ========================================================= */
@@ -26,7 +27,9 @@ window.addEventListener(
     nav?.classList.toggle("scrolled", scrollY > 30);
 
     if (progress) {
-      const max = document.documentElement.scrollHeight - innerHeight;
+      const max =
+        document.documentElement.scrollHeight - innerHeight;
+
       progress.style.width =
         (max > 0 ? (scrollY / max) * 100 : 0) + "%";
     }
@@ -91,8 +94,15 @@ $$(".magnetic").forEach((el) => {
   el.addEventListener("mousemove", (e) => {
     const r = el.getBoundingClientRect();
 
-    const x = e.clientX - r.left - r.width / 2;
-    const y = e.clientY - r.top - r.height / 2;
+    const x =
+      e.clientX -
+      r.left -
+      r.width / 2;
+
+    const y =
+      e.clientY -
+      r.top -
+      r.height / 2;
 
     el.style.transform =
       `translate(${x * 0.12}px, ${y * 0.12}px)`;
@@ -121,7 +131,9 @@ if ("IntersectionObserver" in window) {
     { threshold: 0.12 }
   );
 
-  $$(".reveal").forEach((el) => observer.observe(el));
+  $$(".reveal").forEach((el) =>
+    observer.observe(el)
+  );
 } else {
   $$(".reveal").forEach((el) => {
     el.classList.add("visible");
@@ -134,47 +146,50 @@ if ("IntersectionObserver" in window) {
 ========================================================= */
 
 if ("IntersectionObserver" in window) {
-  const countObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
+  const countObserver =
+    new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
 
-        const el = entry.target;
-        const end = Number(el.dataset.count);
-        const start = 0;
-        const duration = 1200;
+          const el = entry.target;
+          const end = Number(el.dataset.count);
 
-        let t0 = null;
+          const start = 0;
+          const duration = 1200;
 
-        function step(t) {
-          if (!t0) t0 = t;
+          let t0 = null;
 
-          const p = Math.min(
-            (t - t0) / duration,
-            1
-          );
+          function step(t) {
+            if (!t0) t0 = t;
 
-          const v = Math.floor(
-            start +
-            (end - start) *
-            (1 - Math.pow(1 - p, 3))
-          );
+            const p = Math.min(
+              (t - t0) / duration,
+              1
+            );
 
-          el.textContent = v;
+            const v = Math.floor(
+              start +
+              (end - start) *
+              (1 - Math.pow(1 - p, 3))
+            );
 
-          if (p < 1) {
-            requestAnimationFrame(step);
-          } else {
-            el.textContent = end;
+            el.textContent = v;
+
+            if (p < 1) {
+              requestAnimationFrame(step);
+            } else {
+              el.textContent = end;
+            }
           }
-        }
 
-        requestAnimationFrame(step);
-        countObserver.unobserve(el);
-      });
-    },
-    { threshold: 0.7 }
-  );
+          requestAnimationFrame(step);
+
+          countObserver.unobserve(el);
+        });
+      },
+      { threshold: 0.7 }
+    );
 
   $$("[data-count]").forEach((el) =>
     countObserver.observe(el)
@@ -197,23 +212,26 @@ let projectIndex = 0;
 if (slides.length && dots) {
 
   slides.forEach((_, i) => {
-    const b = document.createElement("button");
+    const b =
+      document.createElement("button");
 
     b.setAttribute(
       "aria-label",
       "Project " + (i + 1)
     );
 
-    b.addEventListener("click", () =>
-      showProject(i)
-    );
+    b.addEventListener("click", () => {
+      showProject(i);
+    });
 
     dots.appendChild(b);
   });
 
+
   function showProject(i) {
     projectIndex =
-      (i + slides.length) % slides.length;
+      (i + slides.length) %
+      slides.length;
 
     slides.forEach((s, n) => {
       s.classList.toggle(
@@ -222,43 +240,62 @@ if (slides.length && dots) {
       );
     });
 
-    $$("#sliderDots button").forEach((b, n) => {
-      b.classList.toggle(
-        "active",
-        n === projectIndex
-      );
-    });
+    $$("#sliderDots button").forEach(
+      (b, n) => {
+        b.classList.toggle(
+          "active",
+          n === projectIndex
+        );
+      }
+    );
   }
 
-  prev?.addEventListener("click", () =>
-    showProject(projectIndex - 1)
-  );
 
-  next?.addEventListener("click", () =>
-    showProject(projectIndex + 1)
-  );
+  prev?.addEventListener("click", () => {
+    showProject(projectIndex - 1);
+  });
+
+
+  next?.addEventListener("click", () => {
+    showProject(projectIndex + 1);
+  });
+
 
   showProject(0);
 
-  let sliderTimer = setInterval(
-    () => showProject(projectIndex + 1),
-    6500
-  );
+
+  let sliderTimer =
+    setInterval(
+      () =>
+        showProject(
+          projectIndex + 1
+        ),
+      6500
+    );
+
 
   projectSlider?.addEventListener(
     "mouseenter",
-    () => clearInterval(sliderTimer)
+    () => {
+      clearInterval(sliderTimer);
+    }
   );
+
 
   projectSlider?.addEventListener(
     "mouseleave",
     () => {
-      sliderTimer = setInterval(
-        () => showProject(projectIndex + 1),
-        6500
-      );
+      sliderTimer =
+        setInterval(
+          () =>
+            showProject(
+              projectIndex + 1
+            ),
+          6500
+        );
     }
   );
+
 
   /* Touch swipe */
 
@@ -267,20 +304,24 @@ if (slides.length && dots) {
   projectSlider?.addEventListener(
     "touchstart",
     (e) => {
-      touchX = e.changedTouches[0].screenX;
+      touchX =
+        e.changedTouches[0].screenX;
     },
     { passive: true }
   );
+
 
   projectSlider?.addEventListener(
     "touchend",
     (e) => {
       const dx =
-        e.changedTouches[0].screenX - touchX;
+        e.changedTouches[0].screenX -
+        touchX;
 
       if (Math.abs(dx) > 45) {
         showProject(
-          projectIndex + (dx < 0 ? 1 : -1)
+          projectIndex +
+          (dx < 0 ? 1 : -1)
         );
       }
     },
@@ -290,13 +331,155 @@ if (slides.length && dots) {
 
 
 /* =========================================================
+   HERO SOCIALS
+   MANUAL DRAG / SWIPE
+   NO AUTO SLIDE
+========================================================= */
+
+const socialSlider =
+  $(".hero-socials");
+
+if (socialSlider) {
+
+  let isDragging = false;
+  let startX = 0;
+  let startScrollLeft = 0;
+  let moved = false;
+
+
+  socialSlider.addEventListener(
+    "pointerdown",
+    (e) => {
+
+      isDragging = true;
+      moved = false;
+
+      startX = e.clientX;
+
+      startScrollLeft =
+        socialSlider.scrollLeft;
+
+      socialSlider.classList.add(
+        "is-dragging"
+      );
+
+
+      if (
+        socialSlider.setPointerCapture
+      ) {
+        socialSlider.setPointerCapture(
+          e.pointerId
+        );
+      }
+    }
+  );
+
+
+  socialSlider.addEventListener(
+    "pointermove",
+    (e) => {
+
+      if (!isDragging) return;
+
+      const distance =
+        e.clientX - startX;
+
+
+      if (
+        Math.abs(distance) > 5
+      ) {
+        moved = true;
+      }
+
+
+      socialSlider.scrollLeft =
+        startScrollLeft -
+        distance;
+    }
+  );
+
+
+  const stopSocialDrag = (e) => {
+
+    if (!isDragging) return;
+
+    isDragging = false;
+
+    socialSlider.classList.remove(
+      "is-dragging"
+    );
+
+
+    if (
+      e &&
+      e.pointerId !== undefined &&
+      socialSlider.releasePointerCapture
+    ) {
+
+      try {
+        socialSlider.releasePointerCapture(
+          e.pointerId
+        );
+      } catch (error) {}
+    }
+  };
+
+
+  socialSlider.addEventListener(
+    "pointerup",
+    stopSocialDrag
+  );
+
+
+  socialSlider.addEventListener(
+    "pointercancel",
+    stopSocialDrag
+  );
+
+
+  socialSlider.addEventListener(
+    "pointerleave",
+    (e) => {
+
+      if (
+        e.pointerType === "mouse"
+      ) {
+        stopSocialDrag(e);
+      }
+    }
+  );
+
+
+  /* Prevent accidental link opening */
+
+  socialSlider.addEventListener(
+    "click",
+    (e) => {
+
+      if (moved) {
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        moved = false;
+      }
+    },
+    true
+  );
+}
+
+
+/* =========================================================
    TESTIMONIALS
 ========================================================= */
 
 const quotes = $$(".quote");
-const qButtons = $$(".quote-controls button");
+const qButtons =
+  $$(".quote-controls button");
+
 
 function showQuote(i) {
+
   quotes.forEach((q, n) => {
     q.classList.toggle(
       "active",
@@ -304,17 +487,29 @@ function showQuote(i) {
     );
   });
 
+
   qButtons.forEach((b, n) => {
+
     b.style.color =
-      n === i ? "#b7ff3c" : "";
+      n === i
+        ? "#b7ff3c"
+        : "";
   });
 }
 
+
 qButtons.forEach((b) => {
-  b.addEventListener("click", () => {
-    showQuote(Number(b.dataset.q));
-  });
+
+  b.addEventListener(
+    "click",
+    () => {
+      showQuote(
+        Number(b.dataset.q)
+      );
+    }
+  );
 });
+
 
 if (quotes.length) {
   showQuote(0);
@@ -326,38 +521,55 @@ if (quotes.length) {
    Browser Geolocation → Open-Meteo
 ========================================================= */
 
-const weatherBtn = $("#weatherBtn");
-const weatherTemp = $("#weatherTemp");
-const weatherPlace = $("#weatherPlace");
-const weatherCondition = $("#weatherCondition");
-const weatherIcon = $(".weather-icon");
+const weatherBtn =
+  $("#weatherBtn");
+
+const weatherTemp =
+  $("#weatherTemp");
+
+const weatherPlace =
+  $("#weatherPlace");
+
+const weatherCondition =
+  $("#weatherCondition");
+
+const weatherIcon =
+  $(".weather-icon");
 
 
 function weatherText(code) {
 
   const map = {
+
     0: ["Clear sky", "☀"],
     1: ["Mainly clear", "🌤"],
     2: ["Partly cloudy", "⛅"],
     3: ["Overcast", "☁"],
+
     45: ["Fog", "〰"],
     48: ["Rime fog", "〰"],
+
     51: ["Light drizzle", "🌦"],
     53: ["Drizzle", "🌦"],
     55: ["Heavy drizzle", "🌧"],
+
     61: ["Light rain", "🌦"],
     63: ["Rain", "🌧"],
     65: ["Heavy rain", "🌧"],
+
     71: ["Light snow", "🌨"],
     73: ["Snow", "❄"],
     75: ["Heavy snow", "❄"],
+
     80: ["Rain showers", "🌦"],
     81: ["Rain showers", "🌧"],
     82: ["Heavy showers", "⛈"],
+
     95: ["Thunderstorm", "⛈"],
     96: ["Thunderstorm + hail", "⛈"],
     99: ["Thunderstorm + hail", "⛈"]
   };
+
 
   return (
     map[code] ||
@@ -366,61 +578,92 @@ function weatherText(code) {
 }
 
 
-async function loadWeather(lat, lon) {
+async function loadWeather(
+  lat,
+  lon
+) {
 
   if (!weatherCondition) return;
+
 
   weatherCondition.textContent =
     "Loading local weather…";
 
+
   try {
 
-    const [weatherResponse, geoResponse] =
-      await Promise.all([
+    const [
+      weatherResponse,
+      geoResponse
+    ] = await Promise.all([
 
-        fetch(
-          `https://api.open-meteo.com/v1/forecast` +
-          `?latitude=${lat}` +
-          `&longitude=${lon}` +
-          `&current=temperature_2m,apparent_temperature,weather_code` +
-          `&timezone=auto`
-        ),
+      fetch(
+        `https://api.open-meteo.com/v1/forecast` +
+        `?latitude=${lat}` +
+        `&longitude=${lon}` +
+        `&current=temperature_2m,apparent_temperature,weather_code` +
+        `&timezone=auto`
+      ),
 
-        fetch(
-          `https://geocoding-api.open-meteo.com/v1/reverse` +
-          `?latitude=${lat}` +
-          `&longitude=${lon}` +
-          `&count=1` +
-          `&language=en` +
-          `&format=json`
-        ).catch(() => null)
+      fetch(
+        `https://geocoding-api.open-meteo.com/v1/reverse` +
+        `?latitude=${lat}` +
+        `&longitude=${lon}` +
+        `&count=1` +
+        `&language=en` +
+        `&format=json`
+      ).catch(() => null)
 
-      ]);
+    ]);
+
 
     if (!weatherResponse.ok) {
-      throw new Error("Weather request failed");
+      throw new Error(
+        "Weather request failed"
+      );
     }
 
-    const w = await weatherResponse.json();
+
+    const w =
+      await weatherResponse.json();
+
 
     let g = {};
 
+
     if (geoResponse?.ok) {
-      g = await geoResponse.json();
+      g =
+        await geoResponse.json();
     }
 
-    const cur = w.current || {};
-    const place = g.results?.[0];
 
-    const [label, icon] =
-      weatherText(cur.weather_code);
+    const cur =
+      w.current || {};
+
+    const place =
+      g.results?.[0];
+
+
+    const [
+      label,
+      icon
+    ] =
+      weatherText(
+        cur.weather_code
+      );
+
 
     if (weatherTemp) {
+
       weatherTemp.textContent =
-        `${Math.round(cur.temperature_2m)}°C`;
+        `${Math.round(
+          cur.temperature_2m
+        )}°C`;
     }
 
+
     if (weatherPlace) {
+
       weatherPlace.textContent =
         place
           ? [
@@ -433,16 +676,21 @@ async function loadWeather(lat, lon) {
           : "Your location";
     }
 
+
     if (weatherCondition) {
+
       weatherCondition.textContent =
         `${label} · Feels like ${Math.round(
           cur.apparent_temperature
         )}°C`;
     }
 
+
     if (weatherIcon) {
-      weatherIcon.textContent = icon;
+      weatherIcon.textContent =
+        icon;
     }
+
 
     if (weatherBtn) {
       weatherBtn.textContent =
@@ -456,10 +704,12 @@ async function loadWeather(lat, lon) {
       error
     );
 
+
     if (weatherCondition) {
       weatherCondition.textContent =
         "Weather service unavailable";
     }
+
 
     if (weatherBtn) {
       weatherBtn.textContent =
@@ -481,6 +731,7 @@ function locate() {
       weatherPlace.textContent =
         "Geolocation is not supported";
     }
+
 
     if (weatherCondition) {
       weatherCondition.textContent =
@@ -507,7 +758,6 @@ function locate() {
         pos.coords.latitude,
         pos.coords.longitude
       );
-
     },
 
 
@@ -520,27 +770,37 @@ function locate() {
         err
       );
 
+
       if (weatherPlace) {
         weatherPlace.textContent =
           "Location permission needed";
       }
 
+
       if (weatherCondition) {
 
         if (err.code === 1) {
+
           weatherCondition.textContent =
             "Allow location access to see local weather";
+
         } else if (err.code === 2) {
+
           weatherCondition.textContent =
             "Could not detect your location";
+
         } else if (err.code === 3) {
+
           weatherCondition.textContent =
             "Location request timed out";
+
         } else {
+
           weatherCondition.textContent =
             "Could not detect location";
         }
       }
+
 
       if (weatherBtn) {
         weatherBtn.textContent =
@@ -556,7 +816,6 @@ function locate() {
       timeout: 10000,
       maximumAge: 300000
     }
-
   );
 }
 
@@ -568,24 +827,139 @@ weatherBtn?.addEventListener(
 
 
 /* =========================================================
-   CONTACT FORM
+   CONTACT FORM → DISCORD
 ========================================================= */
 
-const contactForm = $("#contactForm");
+const contactForm =
+  $("#contactForm");
+
 
 contactForm?.addEventListener(
   "submit",
-  (e) => {
+  async (e) => {
 
     e.preventDefault();
 
-    const status = $("#formStatus");
+
+    const status =
+      $("#formStatus");
+
+
+    const submitButton =
+      contactForm.querySelector(
+        'button[type="submit"], input[type="submit"]'
+      );
+
+
+    const name =
+      contactForm.querySelector(
+        '[name="name"]'
+      )?.value.trim() || "";
+
+
+    const email =
+      contactForm.querySelector(
+        '[name="email"]'
+      )?.value.trim() || "";
+
+
+    const subject =
+      contactForm.querySelector(
+        '[name="subject"]'
+      )?.value.trim() || "";
+
+
+    const message =
+      contactForm.querySelector(
+        '[name="message"]'
+      )?.value.trim() || "";
+
+
+    if (!name || !email || !message) {
+
+      if (status) {
+        status.textContent =
+          "Please fill in all required fields.";
+      }
+
+      return;
+    }
+
 
     if (status) {
       status.textContent =
-        "Thanks! This demo form is ready to connect to your email service or Discord webhook.";
+        "Sending message…";
     }
 
+
+    if (submitButton) {
+      submitButton.disabled = true;
+    }
+
+
+    try {
+
+      const response =
+        await fetch(
+          "/api/contact",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+
+            body: JSON.stringify({
+              name,
+              email,
+              subject,
+              message
+            })
+          }
+        );
+
+
+      const result =
+        await response.json()
+          .catch(() => ({}));
+
+
+      if (!response.ok) {
+        throw new Error(
+          result.message ||
+          "Failed to send message."
+        );
+      }
+
+
+      if (status) {
+        status.textContent =
+          "Message sent successfully! I'll get back to you soon.";
+      }
+
+
+      contactForm.reset();
+
+    } catch (error) {
+
+      console.error(
+        "Contact form error:",
+        error
+      );
+
+
+      if (status) {
+        status.textContent =
+          "Something went wrong. Please try again later.";
+      }
+
+    } finally {
+
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
+    }
   }
 );
 
@@ -612,14 +986,19 @@ document.addEventListener(
 
     if (!slides.length) return;
 
+
     if (e.key === "ArrowRight") {
-      showProject(projectIndex + 1);
+      showProject(
+        projectIndex + 1
+      );
     }
+
 
     if (e.key === "ArrowLeft") {
-      showProject(projectIndex - 1);
+      showProject(
+        projectIndex - 1
+      );
     }
-
   }
 );
 
@@ -638,23 +1017,27 @@ $$(
 
       if (innerWidth < 900) return;
 
+
       const r =
         card.getBoundingClientRect();
+
 
       const x =
         (e.clientX - r.left) /
           r.width -
         0.5;
 
+
       const y =
         (e.clientY - r.top) /
           r.height -
         0.5;
 
+
       card.style.transform =
-        `perspective(800px) ` +
-        `rotateX(${y * -4}deg) ` +
-        `rotateY(${x * 5}deg) ` +
+        `perspective(800px)` +
+        `rotateX(${y * -4}deg)` +
+        `rotateY(${x * 5}deg)` +
         `translateY(-4px)`;
     }
   );
@@ -666,5 +1049,4 @@ $$(
       card.style.transform = "";
     }
   );
-
 });
