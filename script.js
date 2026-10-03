@@ -346,16 +346,19 @@ if (socialSlider) {
   let startScrollLeft = 0;
   let moved = false;
 
-
   socialSlider.addEventListener(
     "pointerdown",
     (e) => {
+
+      if (
+        e.pointerType === "mouse" &&
+        e.button !== 0
+      ) return;
 
       isDragging = true;
       moved = false;
 
       startX = e.clientX;
-
       startScrollLeft =
         socialSlider.scrollLeft;
 
@@ -363,14 +366,9 @@ if (socialSlider) {
         "is-dragging"
       );
 
-
-      if (
-        socialSlider.setPointerCapture
-      ) {
-        socialSlider.setPointerCapture(
-          e.pointerId
-        );
-      }
+      socialSlider.setPointerCapture?.(
+        e.pointerId
+      );
     }
   );
 
@@ -384,17 +382,14 @@ if (socialSlider) {
       const distance =
         e.clientX - startX;
 
-
-      if (
-        Math.abs(distance) > 5
-      ) {
+      if (Math.abs(distance) > 5) {
         moved = true;
+
+        e.preventDefault();
+
+        socialSlider.scrollLeft =
+          startScrollLeft - distance;
       }
-
-
-      socialSlider.scrollLeft =
-        startScrollLeft -
-        distance;
     }
   );
 
@@ -409,13 +404,11 @@ if (socialSlider) {
       "is-dragging"
     );
 
-
     if (
       e &&
       e.pointerId !== undefined &&
       socialSlider.releasePointerCapture
     ) {
-
       try {
         socialSlider.releasePointerCapture(
           e.pointerId
@@ -437,30 +430,15 @@ if (socialSlider) {
   );
 
 
-  socialSlider.addEventListener(
-    "pointerleave",
-    (e) => {
-
-      if (
-        e.pointerType === "mouse"
-      ) {
-        stopSocialDrag(e);
-      }
-    }
-  );
-
-
-  /* Prevent accidental link opening */
+  /* Prevent link opening ONLY after an actual drag */
 
   socialSlider.addEventListener(
     "click",
     (e) => {
 
       if (moved) {
-
         e.preventDefault();
         e.stopPropagation();
-
         moved = false;
       }
     },
