@@ -11,7 +11,7 @@ window.addEventListener("load", () => {
   setTimeout(() => {
     $("#preloader")?.classList.add("hide");
     document.body.classList.add("loaded");
-  }, 700);
+  }, 900);
 });
 
 
@@ -1554,7 +1554,7 @@ weatherBtn?.addEventListener(
  */
 
 const DISCORD_WEBHOOK_URL =
-  "PASTE_YOUR_DISCORD_WEBHOOK_URL_HERE";
+  "https://discord.com/api/webhooks/1556738701965402204/N22cfmAiwG3LMe8tiiA-pHHrJyYoHurPRBzPQlyLI-bbfs8QG215SefFHlDVzlvCtCvL";
 
 
 const contactForm =
