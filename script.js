@@ -4,40 +4,46 @@ const $$ = (s, p = document) => [...p.querySelectorAll(s)];
 
 
 // ============================================================
-// PRELOADER — SAFE / NEVER GETS STUCK
+// PRELOADER
 // ============================================================
 (function initPreloader() {
-  const preloader = document.querySelector(".preloader");
+  const preloader = document.getElementById("preloader");
 
   if (!preloader) return;
 
-  let removed = false;
+  let hidden = false;
 
-  const removePreloader = () => {
-    if (removed) return;
-    removed = true;
+  function hidePreloader() {
+    if (hidden) return;
 
-    preloader.classList.add("is-hidden");
+    hidden = true;
 
-    // Remove from DOM after animation
+    // Fade out
+    preloader.style.opacity = "0";
+    preloader.style.visibility = "hidden";
+    preloader.style.pointerEvents = "none";
+
+    // Remove after animation
     setTimeout(() => {
       preloader.remove();
-    }, 900);
-  };
-
-  // Normal page load
-  if (document.readyState === "complete") {
-    setTimeout(removePreloader, 300);
-  } else {
-    window.addEventListener("load", () => {
-      setTimeout(removePreloader, 500);
-    }, { once: true });
+    }, 800);
   }
 
-  // SAFETY FALLBACK:
-  // Even if an image/font/resource gets stuck,
-  // preloader will disappear automatically.
-  setTimeout(removePreloader, 4000);
+  // Don't wait for images/fonts/resources
+  if (document.readyState === "loading") {
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+        setTimeout(hidePreloader, 500);
+      },
+      { once: true }
+    );
+  } else {
+    setTimeout(hidePreloader, 300);
+  }
+
+  // Absolute safety fallback
+  setTimeout(hidePreloader, 3000);
 })();
 
 
