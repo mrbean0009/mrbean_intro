@@ -1,62 +1,53 @@
 ```javascript
 
+console.log("🔥 SCRIPT.JS IS WORKING");
+
 const $ = (s, p = document) => p.querySelector(s);
 const $$ = (s, p = document) => [...p.querySelectorAll(s)];
 
 
 // ============================================================
-// PRELOADER
+// PRELOADER — FIXED
 // ============================================================
 (function initPreloader() {
 
   const preloader = document.getElementById("preloader");
 
   if (!preloader) {
-    console.warn("Preloader #preloader not found.");
+    console.warn("❌ Preloader #preloader not found.");
     return;
   }
 
+  console.log("✅ Preloader found.");
+
   function hidePreloader() {
 
-    // CSS uses #preloader.hide
+    console.log("✅ Hiding preloader...");
+
     preloader.classList.add("hide");
 
-    // Completely remove after fade animation
+    preloader.style.opacity = "0";
+    preloader.style.visibility = "hidden";
+    preloader.style.pointerEvents = "none";
+
     setTimeout(() => {
       if (preloader && preloader.parentNode) {
-        preloader.remove();
+        preloader.parentNode.removeChild(preloader);
       }
-    }, 900);
+    }, 1000);
   }
 
-  /*
-   * Do NOT wait for window.load.
-   * DOM is enough for the preloader.
-   */
-  if (document.readyState === "loading") {
-
-    document.addEventListener(
-      "DOMContentLoaded",
-      () => {
-        setTimeout(hidePreloader, 300);
-      },
-      { once: true }
-    );
-
+  if (document.readyState !== "loading") {
+    setTimeout(hidePreloader, 500);
   } else {
-
-    setTimeout(hidePreloader, 300);
+    document.addEventListener("DOMContentLoaded", () => {
+      setTimeout(hidePreloader, 500);
+    }, { once: true });
   }
 
-  /*
-   * Emergency fallback.
-   * Even if something goes wrong,
-   * preloader cannot remain forever.
-   */
   setTimeout(hidePreloader, 3000);
 
 })();
-
 
 
 
