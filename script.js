@@ -3,16 +3,44 @@ const $ = (s, p = document) => p.querySelector(s);
 const $$ = (s, p = document) => [...p.querySelectorAll(s)];
 
 
-/* =========================================================
-   PRELOADER
-========================================================= */
+// ============================================================
+// PRELOADER — SAFE / NEVER GETS STUCK
+// ============================================================
+(function initPreloader() {
+  const preloader = document.querySelector(".preloader");
 
-window.addEventListener("load", () => {
-  setTimeout(() => {
-    $("#preloader")?.classList.add("hide");
-    document.body.classList.add("loaded");
-  }, 900);
-});
+  if (!preloader) return;
+
+  let removed = false;
+
+  const removePreloader = () => {
+    if (removed) return;
+    removed = true;
+
+    preloader.classList.add("is-hidden");
+
+    // Remove from DOM after animation
+    setTimeout(() => {
+      preloader.remove();
+    }, 900);
+  };
+
+  // Normal page load
+  if (document.readyState === "complete") {
+    setTimeout(removePreloader, 300);
+  } else {
+    window.addEventListener("load", () => {
+      setTimeout(removePreloader, 500);
+    }, { once: true });
+  }
+
+  // SAFETY FALLBACK:
+  // Even if an image/font/resource gets stuck,
+  // preloader will disappear automatically.
+  setTimeout(removePreloader, 4000);
+})();
+
+
 
 
 /* =========================================================
