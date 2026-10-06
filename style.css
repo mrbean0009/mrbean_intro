@@ -77,7 +77,7 @@ button {
   transition: 0.8s var(--ease);
 }
 
-#preloader.hide {
+#preloader.loaded {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
